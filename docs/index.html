@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Random Stories</title>
+
+<style>
+:root{
+  --bg:#0f1115;
+  --card:#171a21;
+  --text:#e6e6e6;
+  --muted:#9aa0a6;
+  --accent:#ff3b3b;
+}
+
+body.light{
+  --bg:#f5f5f5;
+  --card:#ffffff;
+  --text:#111;
+  --muted:#555;
+}
+
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+header{
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid #333;
+}
+
+h1{
+  font-size:18px;
+  margin:0;
+}
+
+.controls{
+  display:flex;
+  gap:10px;
+}
+
+input{
+  padding:8px;
+  border-radius:6px;
+  border:none;
+  outline:none;
+  width:200px;
+}
+
+button{
+  padding:8px 10px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  background:var(--card);
+  color:var(--text);
+}
+
+#container{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(260px,1fr));
+  gap:15px;
+  padding:15px;
+}
+
+.card{
+  background:var(--card);
+  padding:12px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.card:hover{
+  transform:scale(1.02);
+}
+
+.title{
+  font-weight:bold;
+  font-size:16px;
+}
+
+.meta{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:5px;
+}
+
+.desc{
+  margin-top:8px;
+  font-size:13px;
+  color:var(--text);
+}
+
+#storyView{
+  display:none;
+  padding:20px;
+}
+
+#backBtn{
+  margin-bottom:15px;
+}
+
+img{
+  max-width:100%;
+  border-radius:8px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Random Stories</h1>
+
+  <div class="controls">
+    <input id="search" placeholder="Search...">
+    <button onclick="toggleTheme()">🌓</button>
+  </div>
+</header>
+
+<div id="container"></div>
+
+<div id="storyView">
+  <button id="backBtn">⬅ Back</button>
+  <div id="storyContent"></div>
+</div>
+
+<script src="storys.js"></script>
+
+</body>
+</html>
