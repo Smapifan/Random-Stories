@@ -8,131 +8,93 @@
 
 <style>
 :root{
+  --scale:1;
   --bg:#0f1115;
   --card:#171a21;
   --text:#e6e6e6;
   --muted:#9aa0a6;
-  --accent:#ff3b3b;
-}
-
-body.light{
-  --bg:#f5f5f5;
-  --card:#ffffff;
-  --text:#111;
-  --muted:#555;
 }
 
 body{
   margin:0;
-  font-family: Arial, sans-serif;
+  font-family:Arial;
   background:var(--bg);
   color:var(--text);
+  transform:scale(var(--scale));
+  transform-origin:top left;
 }
 
 header{
-  padding:15px;
   display:flex;
   justify-content:space-between;
-  align-items:center;
+  padding:12px;
   border-bottom:1px solid #333;
-}
-
-h1{
-  font-size:18px;
-  margin:0;
+  align-items:center;
 }
 
 .controls{
   display:flex;
-  gap:10px;
+  gap:8px;
+  align-items:center;
 }
 
-input{
-  padding:8px;
-  border-radius:6px;
-  border:none;
-  outline:none;
-  width:200px;
-}
-
-button{
-  padding:8px 10px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-  background:var(--card);
-  color:var(--text);
+select, input{
+  padding:6px;
 }
 
 #container{
   display:grid;
   grid-template-columns:repeat(auto-fill, minmax(260px,1fr));
-  gap:15px;
-  padding:15px;
+  gap:10px;
+  padding:10px;
 }
 
 .card{
   background:var(--card);
-  padding:12px;
+  padding:10px;
   border-radius:10px;
   cursor:pointer;
-  transition:0.2s;
 }
 
-.card:hover{
-  transform:scale(1.02);
-}
+.title{font-weight:bold;}
+.meta{font-size:12px;color:var(--muted);}
+.desc{font-size:13px;margin-top:5px;}
 
-.title{
-  font-weight:bold;
-  font-size:16px;
-}
-
-.meta{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:5px;
-}
-
-.desc{
-  margin-top:8px;
-  font-size:13px;
-  color:var(--text);
-}
-
-#storyView{
+#view{
   display:none;
-  padding:20px;
+  padding:15px;
 }
 
-#backBtn{
-  margin-bottom:15px;
+button{
+  cursor:pointer;
+  padding:6px;
 }
-
-img{
-  max-width:100%;
-  border-radius:8px;
-}
-
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>Random Stories</h1>
+  <div>📚 Stories</div>
 
   <div class="controls">
-    <input id="search" placeholder="Search...">
+    <select id="lang"></select>
+
+    <label>🔎</label>
+    <input id="search" placeholder="search">
+
+    <label>📏</label>
+    <input type="range" min="0.8" max="1.6" step="0.1" value="1" oninput="setScale(this.value)">
+
     <button onclick="toggleTheme()">🌓</button>
   </div>
 </header>
 
 <div id="container"></div>
 
-<div id="storyView">
-  <button id="backBtn">⬅ Back</button>
-  <div id="storyContent"></div>
+<div id="view">
+  <button onclick="back()">⬅ Back</button>
+  <div id="content"></div>
 </div>
 
 <script src="storys.js"></script>
