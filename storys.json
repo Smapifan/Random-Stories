@@ -1,0 +1,64 @@
+[
+  {
+    "id": 1,
+    "author": "Smapifan",
+    "date": "2026-06-22",
+    "category": "Horror",
+    "tags": ["wolf", "night", "forest"],
+    "banner": "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
+    "language": [
+      {
+        "locale": "de",
+        "title": "Der Schatten im Wald",
+        "content": "Ich hörte ihn nicht kommen...\nNur das Knacken der Äste.\nDann war alles still."
+      },
+      {
+        "locale": "en",
+        "title": "The Shadow in the Forest",
+        "content": "I didn't hear it coming...\nOnly the breaking branches.\nThen everything went silent."
+      }
+    ]
+  },
+
+  {
+    "id": 2,
+    "author": "Smapifan",
+    "date": "2026-06-21",
+    "category": "Sci-Fi",
+    "tags": ["space", "ai", "future"],
+    "banner": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa",
+    "language": [
+      {
+        "locale": "de",
+        "title": "Die letzte KI",
+        "content": "Sie war die letzte ihrer Art.\nNicht kaputt. Nur allein.\nUnd sie begann zu träumen."
+      },
+      {
+        "locale": "en",
+        "title": "The Last AI",
+        "content": "It was the last of its kind.\nNot broken. Just alone.\nAnd it started to dream."
+      }
+    ]
+  },
+
+  {
+    "id": 3,
+    "author": "Smapifan",
+    "date": "2026-06-20",
+    "category": "Mystery",
+    "tags": ["house", "door", "secret"],
+    "banner": "https://images.unsplash.com/photo-1529429617124-95b109e86bb8",
+    "language": [
+      {
+        "locale": "de",
+        "title": "Die Tür ohne Schloss",
+        "content": "Jedes Haus hat eine Tür.\nAber diese hatte kein Schloss.\nUnd trotzdem war sie immer verschlossen."
+      },
+      {
+        "locale": "en",
+        "title": "The Door Without a Lock",
+        "content": "Every house has a door.\nBut this one had no lock.\nYet it was always closed."
+      }
+    ]
+  }
+]
