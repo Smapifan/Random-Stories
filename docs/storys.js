@@ -1,162 +1,133 @@
-const STORY_URL =
-  "https://raw.githubusercontent.com/Smapifan/Random-Stories/stories/storys.json";
+const URL =
+"https://raw.githubusercontent.com/Smapifan/Random-Stories/stories/storys.json?t=" + Date.now();
 
 let STORIES = [];
-let currentLang = navigator.language?.startsWith("de") ? "de" : "en";
+let LANG = "en";
 
 const container = document.getElementById("container");
-const storyView = document.getElementById("storyView");
-const storyContent = document.getElementById("storyContent");
-const searchInput = document.getElementById("search");
+const view = document.getElementById("view");
+const content = document.getElementById("content");
+const langSelect = document.getElementById("lang");
 
-// ------------------------
-// INIT
-// ------------------------
-(async function init() {
-  await loadStories();
-  renderStories(STORIES);
+// -------------------- INIT
+(async function(){
+  await load();
+  buildLangMenu();
+  render(STORIES);
   setupSearch();
-  checkUrlStory();
 })();
 
-// ------------------------
-// LOAD JSON (no cache)
-// ------------------------
-async function loadStories() {
-  try {
-    const res = await fetch(STORY_URL + "?t=" + Date.now(), {
-      cache: "no-store",
-    });
-    STORIES = await res.json();
-  } catch (e) {
-    console.error("Failed to load stories", e);
-    STORIES = [];
-  }
+// -------------------- LOAD
+async function load(){
+  const res = await fetch(URL, {cache:"no-store"});
+  STORIES = await res.json();
 }
 
-// ------------------------
-// RENDER CARDS
-// ------------------------
-function renderStories(list) {
+// -------------------- LANG MENU (dynamic!)
+function buildLangMenu(){
+  const set = new Set();
+
+  STORIES.forEach(s=>{
+    (s.language||[]).forEach(l=>{
+      set.add(l.locale);
+    });
+  });
+
+  langSelect.innerHTML = "";
+
+  [...set].forEach(l=>{
+    const opt = document.createElement("option");
+    opt.value = l;
+    opt.textContent = l;
+    langSelect.appendChild(opt);
+  });
+
+  LANG = langSelect.value || "en";
+
+  langSelect.onchange = ()=>{
+    LANG = langSelect.value;
+    render(STORIES);
+  };
+}
+
+// -------------------- RENDER
+function render(list){
   container.innerHTML = "";
 
-  list.forEach((story) => {
-    const langData = getLang(story);
+  list.forEach(s=>{
+    const l = getLang(s);
 
     const div = document.createElement("div");
-    div.className = "card";
+    div.className="card";
 
     div.innerHTML = `
-      <div class="title">${truncate(langData.title, 25)}</div>
-      <div class="meta">
-        ${story.author || "Unknown"} • ${story.date || ""}
-      </div>
-      <div class="desc">
-        ${truncate(strip(langData.content), 50)}...
-      </div>
+      <div class="title">${cut(l.title,25)}</div>
+      <div class="meta">${s.author||""}</div>
+      <div class="desc">${cut(strip(l.content),50)}...</div>
     `;
 
-    div.onclick = () => openStory(story.id);
-
+    div.onclick=()=>open(s.id);
     container.appendChild(div);
   });
 }
 
-// ------------------------
-// OPEN STORY VIEW
-// ------------------------
-function openStory(id) {
-  const story = STORIES.find((s) => s.id == id);
-  if (!story) return;
+// -------------------- OPEN
+function open(id){
+  const s = STORIES.find(x=>x.id==id);
+  if(!s) return;
 
-  const langData = getLang(story);
+  const l = getLang(s);
 
-  container.style.display = "none";
-  storyView.style.display = "block";
+  container.style.display="none";
+  view.style.display="block";
 
-  storyContent.innerHTML = `
-    <h2>${langData.title}</h2>
-    <p><b>${story.author || ""}</b> • ${story.date || ""}</p>
+  content.innerHTML=`
+    <h2>${l.title}</h2>
+    <p>${s.author||""}</p>
     <hr>
-
-    ${story.banner ? `<img src="${story.banner}">` : ""}
-
-    <p>${formatText(langData.content)}</p>
+    <p>${l.content.replace(/\n/g,"<br>")}</p>
   `;
-
-  history.pushState({}, "", "?story=" + id);
 }
 
-// ------------------------
-// BACK BUTTON
-// ------------------------
-document.getElementById("backBtn").onclick = () => {
-  storyView.style.display = "none";
-  container.style.display = "grid";
-  history.pushState({}, "", window.location.pathname);
-};
-
-// ------------------------
-// SEARCH
-// ------------------------
-function setupSearch() {
-  searchInput.addEventListener("input", (e) => {
-    const q = e.target.value.toLowerCase();
-
-    const filtered = STORIES.filter((s) => {
-      const langData = getLang(s);
-      return (
-        langData.title.toLowerCase().includes(q) ||
-        langData.content.toLowerCase().includes(q) ||
-        (s.author || "").toLowerCase().includes(q)
-      );
-    });
-
-    renderStories(filtered);
-  });
+// -------------------- BACK
+function back(){
+  view.style.display="none";
+  container.style.display="grid";
 }
 
-// ------------------------
-// LANGUAGE SYSTEM (i18n)
-// ------------------------
-function getLang(story) {
-  if (!story.language) return story;
-
+// -------------------- LANG PICK
+function getLang(story){
   const found =
-    story.language.find((l) => l.locale === currentLang) ||
-    story.language.find((l) => l.locale === "en");
+    (story.language||[]).find(x=>x.locale===LANG) ||
+    (story.language||[]).find(x=>x.locale==="en") ||
+    (story.language||[])[0];
 
-  return found || story.language[0];
+  return found || {title:"",content:""};
 }
 
-// ------------------------
-// URL STORY
-// ------------------------
-function checkUrlStory() {
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("story");
-  if (id) openStory(id);
+// -------------------- SEARCH
+function setupSearch(){
+  document.getElementById("search").oninput=(e)=>{
+    const q=e.target.value.toLowerCase();
+
+    render(STORIES.filter(s=>{
+      const l=getLang(s);
+      return l.title.toLowerCase().includes(q) ||
+             l.content.toLowerCase().includes(q);
+    }));
+  };
 }
 
-// ------------------------
-// UTIL
-// ------------------------
-function truncate(str, n) {
-  if (!str) return "";
-  return str.length > n ? str.slice(0, n) : str;
+// -------------------- SCALE
+function setScale(v){
+  document.documentElement.style.setProperty("--scale",v);
 }
 
-function strip(html) {
-  return html.replace(/<[^>]*>?/gm, "");
-}
-
-function formatText(text) {
-  return text.replace(/\n/g, "<br>");
-}
-
-// ------------------------
-// THEME TOGGLE
-// ------------------------
-function toggleTheme() {
+// -------------------- THEME
+function toggleTheme(){
   document.body.classList.toggle("light");
 }
+
+// -------------------- UTIL
+function cut(s,n){return s?s.slice(0,n):"";}
+function strip(s){return s.replace(/<[^>]*>/g,"");}
